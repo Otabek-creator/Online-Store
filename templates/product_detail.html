@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static humanize custom_filters %}
+
+{% block styles %}
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet"/>
+
+    <style>
+        .wrapper {
+            display: inline-block;
+        }
+
+        .wrapper * {
+            float: right;
+        }
+
+        input {
+            display: none;
+        }
+
+        label {
+            font-size: 30px;
+            color: #ccc;
+        }
+
+        input:checked ~ label {
+            color: #ffc008;
+        }
+
+        .no-color {
+            color: #ccc;
+        }
+    </style>
+
+{% endblock styles %}
+
+{% block content %}
+    <!-- Product section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0"
+                        {% if product.image %}
+                                           src="/media/{{ product.image }}" {% else %} src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg {% endif %}"
+                                           alt="..."/></div>
+                <div class="col-md-6">
+                    <div class="small mb-1">SKU: BST-498</div>
+                    <h1 class="display-5 fw-bolder">{{ product.title }}</h1>
+                    <div class="fs-5 mb-5">
+                        <span class="text-decoration-line-through">{{ product.price|intcomma }}</span>
+                        <span>{{ product.discounted_price|intcomma }} UZS</span>
+                    </div>
+                    <p class="lead">{{ product.description }}</p>
+                    <div class="d-flex">
+                        <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1"
+                               style="max-width: 3rem"/>
+                        <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                            <i class="bi-cart-fill me-1"></i>
+                            Add to cart
+                        </button>
+                    </div>
+                    <br>
+                    <h4>Your stars: {% get_prod_rating product.id %}</h4>
+                    <form class="wrapper" action="{% url 'rating_create' product.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="radio" id="r1" name="score" value="5">
+                        <label for="r1">
+                            <div class="bi-star-fill"></div>
+                        </label>
+                        <input type="radio" id="r2" name="score" value="4">
+                        <label for="r2">
+                            <div class="bi-star-fill"></div>
+                        </label>
+                        <input type="radio" id="r3" name="score" value="3">
+                        <label for="r3">
+                            <div class="bi-star-fill"></div>
+                        </label>
+                        <input type="radio" id="r4" name="score" value="2">
+                        <label for="r4">
+                            <div class="bi-star-fill"></div>
+                        </label>
+                        <input type="radio" id="r5" name="score" value="1">
+                        <label for="r5">
+                            <div class="bi-star-fill"></div>
+                        </label>
+                        <br>
+                        <br>
+                        <button type="submit" class="btn btn-outline-primary" style="float: left">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Related items section-->
+    <section class="py-5 bg-light">
+        <div class="container px-4 px-lg-5 mt-5">
+            <h2 class="fw-bolder mb-4">Related products</h2>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for related_product in related_products %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Sale badge-->
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">
+                                Sale
+                            </div>
+                            <!-- Product image-->
+                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..."/>
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ related_product.title }}</h5>
+                                    <!-- Product reviews-->
+                                    {% get_prod_rating related_product.id as rating %}
+                                    <div class="d-flex justify-content-center small text-warning mb-2">
+                                        <div class="bi-star-fill no-color" {% if rating >= 1 %} style="color: #ffc008" {% endif %}></div>
+                                        <div class="bi-star-fill no-color" {% if rating >= 2 %} style="color: #ffc008" {% endif %}></div>
+                                        <div class="bi-star-fill no-color" {% if rating >= 3 %} style="color: #ffc008" {% endif %}></div>
+                                        <div class="bi-star-fill no-color" {% if rating >= 4 %} style="color: #ffc008" {% endif %}></div>
+                                        <div class="bi-star-fill no-color" {% if rating == 5 %} style="color: #ffc008" {% endif %}></div>
+                                    </div>
+                                    <!-- Product price-->
+                                    <span class="text-muted text-decoration-line-through">{{ related_product.price|intcomma }}</span>
+                                    {{ related_product.discounted_price|intcomma }} UZS
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to
+                                    cart</a></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+        
+        

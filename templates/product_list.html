@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static humanize custom_filters %}
+
+{% block styles %}
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet"/>
+    <style>
+    .no-color {
+        color: #ccc;
+    }
+    </style>
+{% endblock styles %}
+
+{% block content %}
+    <!-- Header-->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shop in style</h1>
+                <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+            </div>
+        </div>
+    </header>
+    <!-- Section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for product in products %}
+                    <div class="col mb-5">
+                        <a href="{% url 'product_detail' product.id %}" style="text-decoration: none">
+                            <div class="card h-100">
+                                <!-- Sale badge-->
+                                <div class="badge bg-dark text-white position-absolute"
+                                     style="top: 0.5rem; right: 0.5rem">Sale
+                                </div>
+                                {% if request.user.id == product.created_by.id %}
+                                    <div class="badge bg-warning text-white position-absolute"
+                                         style="top: 0.5rem; left: 0.5rem">
+                                        <a href="{% url 'product_update' product.id %}"><i
+                                                class="bi bi-pencil-square"></i></a>
+                                    </div>
+                                {% endif %}
+                                <!-- Product image-->
+                                <img class="card-img-top" style="height: 200px" {% if product.image %}
+                                     src="/media/{{ product.image }}" {% else %} src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg {% endif %}"
+                                     alt="..."/>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <!-- Product name-->
+                                        <h5 class="fw-bolder">{{ product.title }}</h5>
+                                        <!-- Product reviews-->
+                                        {% get_prod_rating product.id as rating %}
+                                        <div class="d-flex justify-content-center small text-warning mb-2">
+                                            <div class="bi-star-fill no-color" {% if rating >= 1 %} style="color: #ffc008" {% endif %}></div>
+                                            <div class="bi-star-fill no-color" {% if rating >= 2 %} style="color: #ffc008" {% endif %}></div>
+                                            <div class="bi-star-fill no-color" {% if rating >= 3 %} style="color: #ffc008" {% endif %}></div>
+                                            <div class="bi-star-fill no-color" {% if rating >= 4 %} style="color: #ffc008" {% endif %}></div>
+                                            <div class="bi-star-fill no-color" {% if rating == 5 %} style="color: #ffc008" {% endif %}></div>
+                                        </div>
+                                        <!-- Product price-->
+                                        <span class="text-muted text-decoration-line-through">{{ product.price|intcomma }}</span>
+                                        {{ product.discounted_price|intcomma }} UZS
+                                    </div>
+                                </div>
+                                <!-- Product actions-->
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent text-center gap-2">
+                                    <a href="{% url 'bucket_product_create' product.id %}" type="submit"
+                                       class="btn btn-outline-primary"><i class="bi bi-cart4"></i></a>
+                                    {% if request.user.id == product.created_by.id %}
+                                        <a href="{% url 'product_delete' product.id %}" type="button"
+                                           class="btn btn-outline-danger"><i class="bi bi-trash"></i></a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
