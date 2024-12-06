@@ -63,9 +63,10 @@ I am a Backend Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGB
 </div>  
 
 ---
-### :writing_hand: Blog Posts :
+### :shopping_cart: Project Features :
 
-<!-- BLOG-POST-LIST:START -->
-This site is new and best blog-site
-<!-- BLOG-POST-LIST:END -->
-
+<!-- PROJECT-FEATURES-LIST:START --> 
+This project includes features such as product listings, shopping cart, user authentication,
+and order management. The goal is to provide a seamless shopping experience 
+for users and a robust backend for managing products and orders. 
+<!-- PROJECT-FEATURES-LIST:END -->
